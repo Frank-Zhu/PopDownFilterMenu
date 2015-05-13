@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ImageTextView">
+        <attr name="fmTextColor" format="color" />
+        <attr name="fmNumberColor" format="color" />
+        <attr name="fmTextSize" format="dimension" />
+        <attr name="fmNumberSize" format="dimension" />
+        <attr name="fmIcon" format="reference" />
+        <attr name="fmShowIcon" format="boolean" />
+        <attr name="fmShowNumber" format="boolean" />
+        <attr name="fmNumberBackground" format="reference" />
+    </declare-styleable>
+
+</resources>
