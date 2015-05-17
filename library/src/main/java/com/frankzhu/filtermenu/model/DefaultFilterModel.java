@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+
 /**
  * Author:    ZhuWenWu
  * Version    V1.0
@@ -16,15 +18,24 @@ import com.google.gson.Gson;
  * 15/5/13      ZhuWenWu            1.0                    1.0
  * Why & What is modified:
  */
-public class FilterModel implements Parcelable {
+public class DefaultFilterModel extends BaseModel implements Parcelable {
     public String id;
     public String name;
     public String imageUrl;
     public int imageDrawableId;
     public long count;
+    public ArrayList<DefaultFilterModel> mSeconds;
+
+    @Override
+    public String getItemName() {
+        return name;
+    }
 
     public String toJson() {
         return new Gson().toJson(this);
+    }
+
+    public DefaultFilterModel() {
     }
 
     @Override
@@ -39,26 +50,25 @@ public class FilterModel implements Parcelable {
         dest.writeString(this.imageUrl);
         dest.writeInt(this.imageDrawableId);
         dest.writeLong(this.count);
+        dest.writeList(this.mSeconds);
     }
 
-    public FilterModel() {
-    }
-
-    private FilterModel(Parcel in) {
+    private DefaultFilterModel(Parcel in) {
         this.id = in.readString();
         this.name = in.readString();
         this.imageUrl = in.readString();
         this.imageDrawableId = in.readInt();
         this.count = in.readLong();
+        this.mSeconds = (ArrayList<DefaultFilterModel>) in.readArrayList(DefaultFilterModel.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<FilterModel> CREATOR = new Parcelable.Creator<FilterModel>() {
-        public FilterModel createFromParcel(Parcel source) {
-            return new FilterModel(source);
+    public static final Creator<DefaultFilterModel> CREATOR = new Creator<DefaultFilterModel>() {
+        public DefaultFilterModel createFromParcel(Parcel source) {
+            return new DefaultFilterModel(source);
         }
 
-        public FilterModel[] newArray(int size) {
-            return new FilterModel[size];
+        public DefaultFilterModel[] newArray(int size) {
+            return new DefaultFilterModel[size];
         }
     };
 }

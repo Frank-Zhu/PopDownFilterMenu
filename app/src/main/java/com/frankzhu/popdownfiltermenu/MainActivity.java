@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.frankzhu.filtermenu.FilterMenu;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -12,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FilterMenu filterMenu = (FilterMenu) findViewById(R.id.filter_menu);
+        filterMenu.bindFilterMenuData();
     }
 
     @Override

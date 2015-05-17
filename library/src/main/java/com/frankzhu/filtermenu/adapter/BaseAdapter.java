@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 
+import com.frankzhu.filtermenu.model.BaseModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +20,7 @@ import java.util.List;
  * 15/5/13      ZhuWenWu            1.0                    1.0
  * Why & What is modified:
  */
-public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public abstract class BaseAdapter<T extends BaseModel> extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     protected final Context mContext;
     protected final LayoutInflater mLayoutInflater;
     protected ArrayList<T> mDataList = new ArrayList<>();
@@ -38,7 +40,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * Add Items
+     * Add items
      *
      * @param list <T> data list
      */
@@ -47,7 +49,7 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
     }
 
     /**
-     * Add Items with position
+     * Add items with position
      *
      * @param position inserted list position
      * @param list     <T> data list
@@ -62,6 +64,18 @@ public abstract class BaseAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
                 mDataList.addAll(position, list);
                 notifyItemRangeInserted(position, list.size());
             }
+        }
+    }
+
+    /**
+     * Remove item with position
+     *
+     * @param position Removed list position
+     */
+    public void removeItem(int position) {
+        if (position >= 0 && position < mDataList.size()) {
+            mDataList.remove(position);
+            notifyItemRemoved(position);
         }
     }
 
