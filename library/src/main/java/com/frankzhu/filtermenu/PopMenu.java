@@ -95,13 +95,16 @@ public class PopMenu {
 
     private void updatePopMenuShowItemCount(int showItemCount) {
         if (mFirstFilterAdapter != null) {
-            int firstItemCount = mFirstFilterAdapter.getItemCount();
-            if (mFirstFilterAdapter.getItemCount() > showItemCount) {
-                firstItemCount = showItemCount;
-            }
-            mFirstFilterLayoutManager.setShowCount(showItemCount);
-            if (mSecondFilterAdapter != null) {
-                mSecondFilterLayoutManager.setShowCount(firstItemCount);
+            if (showItemCount > 0 && mFirstFilterAdapter.getItemCount() > showItemCount) {
+                mFirstFilterLayoutManager.setShowCount(showItemCount);
+                if (mSecondFilterAdapter != null) {
+                    mSecondFilterLayoutManager.setShowCount(showItemCount);
+                }
+            } else {
+                mFirstFilterLayoutManager.setIsLimitHeight(false);
+                if (mSecondFilterAdapter != null) {
+                    mSecondFilterLayoutManager.setIsLimitHeight(false);
+                }
             }
         }
     }

@@ -24,7 +24,7 @@ public class DefaultFilterModel extends BaseModel implements Parcelable {
     public String imageUrl;
     public int imageDrawableId;
     public long count;
-    public ArrayList<DefaultFilterModel> mSeconds;
+    public ArrayList<DefaultFilterModel> seconds;
 
     @Override
     public String getItemName() {
@@ -50,7 +50,7 @@ public class DefaultFilterModel extends BaseModel implements Parcelable {
         dest.writeString(this.imageUrl);
         dest.writeInt(this.imageDrawableId);
         dest.writeLong(this.count);
-        dest.writeList(this.mSeconds);
+        dest.writeList(this.seconds);
     }
 
     private DefaultFilterModel(Parcel in) {
@@ -59,7 +59,7 @@ public class DefaultFilterModel extends BaseModel implements Parcelable {
         this.imageUrl = in.readString();
         this.imageDrawableId = in.readInt();
         this.count = in.readLong();
-        this.mSeconds = (ArrayList<DefaultFilterModel>) in.readArrayList(DefaultFilterModel.class.getClassLoader());
+        this.seconds = (ArrayList<DefaultFilterModel>) in.readArrayList(DefaultFilterModel.class.getClassLoader());
     }
 
     public static final Creator<DefaultFilterModel> CREATOR = new Creator<DefaultFilterModel>() {

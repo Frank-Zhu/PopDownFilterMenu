@@ -8,12 +8,10 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.frankzhu.filtermenu.adapter.DefaultFilterAdapter;
 import com.frankzhu.filtermenu.adapter.FilterBaseAdapter;
-import com.frankzhu.filtermenu.holder.FilterViewHolder;
-import com.frankzhu.filtermenu.model.DefaultFilterModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author:    ZhuWenWu
@@ -27,11 +25,14 @@ import java.util.ArrayList;
  * Why & What is modified:
  */
 public class FilterMenu extends HorizontalScrollView {
+    private final LinearLayout.LayoutParams mDefaultTabLayoutParams;
+    private final LinearLayout.LayoutParams mExpandedTabLayoutParams;
     private ArrayList<TextView> mMenuViews = new ArrayList<>();
     private ArrayList<FilterBaseAdapter[]> mMenuAdapters = new ArrayList<>();
+    private ArrayList<String> mMenuTitles = new ArrayList<>();
     private PopMenu mPopMenu;
-    private boolean isExpand;
-    private LinearLayout mLinearLayout;
+    private boolean shouldExpand = true;
+    private LinearLayout mMenuLayout;
 
     public FilterMenu(Context context) {
         this(context, null);
@@ -43,33 +44,66 @@ public class FilterMenu extends HorizontalScrollView {
 
     public FilterMenu(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLinearLayout = new LinearLayout(context);
-        mLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        addView(mLinearLayout);
+        setFillViewport(true);
+        setWillNotDraw(false);
+        mMenuLayout = new LinearLayout(context);
+        mMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
+        mMenuLayout.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        mMenuLayout.setDividerDrawable(getResources().getDrawable(android.R.drawable.divider_horizontal_dark));
+        mMenuLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        mMenuLayout.setDividerPadding(8);
+        addView(mMenuLayout);
+        mDefaultTabLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        mExpandedTabLayoutParams = new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.0f);
+    }
+
+    public PopMenu getPopMenu() {
+        return mPopMenu;
+    }
+
+    public TextView getMenuItemView(int position) {
+        return mMenuViews.size() > 0 && position < mMenuViews.size() ? mMenuViews.get(position) : null;
     }
 
     private void initMenuViews() {
         initPopMenu();
-        mLinearLayout.removeAllViews();
+        updateMenuViews();
+    }
+
+    private void updateMenuViews() {
+        mMenuLayout.removeAllViews();
         mMenuViews.clear();
-        for (int i = 0; i < mMenuAdapters.size(); i++) {
-            final View menuView = LayoutInflater.from(getContext()).inflate(R.layout.item_menu, this, false);
-            TextView tvMenu = (TextView) menuView.findViewById(R.id.tv_menu);
-            menuView.setTag(i);
-            tvMenu.setText("Menu" + (i + 1));
-            menuView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = (Integer) v.getTag();
-                    if (mPopMenu != null) {
-                        mPopMenu.setIsShowSecond(mMenuAdapters.get(position).length == 2);
-                        mPopMenu.showPopMenu(menuView);
-                    }
-                }
-            });
-            mMenuViews.add(tvMenu);
-            mLinearLayout.addView(menuView);
+        for (int i = 0; i < mMenuTitles.size(); i++) {
+            View menuView = LayoutInflater.from(getContext()).inflate(R.layout.item_menu, this, false);
+            addMenuView(i, mMenuTitles.get(i), menuView);
         }
+    }
+
+    public void setShouldExpand(boolean shouldExpand) {
+        this.shouldExpand = shouldExpand;
+    }
+
+    private void addMenuView(int position, String title, final View menuView) {
+        TextView tvMenu = (TextView) menuView.findViewById(R.id.tv_menu);
+        menuView.setTag(position);
+        tvMenu.setText(title);
+        menuView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = (Integer) v.getTag();
+                if (mPopMenu != null) {
+                    mPopMenu.setIsShowSecond(mMenuAdapters.get(position).length == 2);
+                    if (position == 1) {
+                        mPopMenu.setShowItemCount(4);
+                    } else {
+                        mPopMenu.setShowItemCount(-1);
+                    }
+                    mPopMenu.showPopMenu(menuView);
+                }
+            }
+        });
+        mMenuViews.add(tvMenu);
+        mMenuLayout.addView(menuView, shouldExpand ? mExpandedTabLayoutParams : mDefaultTabLayoutParams);
     }
 
     private void initPopMenu() {
@@ -82,38 +116,14 @@ public class FilterMenu extends HorizontalScrollView {
             } else {
                 mPopMenu.setFirstRecyclerViewAdapter(mMenuAdapters.get(0)[0]);
             }
-//            mPopMenu.setShowItemCount(12);
         }
     }
 
-    public void bindFilterMenuData() {
-        initMenuAdapters();
-        initMenuViews();
-    }
-
-    private void initMenuAdapters() {
-        mMenuAdapters.clear();
-        FilterBaseAdapter[] adapters = new FilterBaseAdapter[2];
-        DefaultFilterAdapter defaultFilterAdapter = new DefaultFilterAdapter(getContext(), new FilterViewHolder.OnViewItemClickListener() {
-            @Override
-            public void onViewItemClick(int position) {
-                if (mPopMenu != null) {
-                    mPopMenu.hidePopMenu();
-                }
-            }
-        });
-        ArrayList<DefaultFilterModel> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            DefaultFilterModel data = new DefaultFilterModel();
-            data.id = String.valueOf(i);
-            data.count = i;
-            data.name = "Menu" + (i + 1);
-            list.add(data);
+    public void bindFilterMenuItems(List<FilterBaseAdapter[]> menuAdapters, List<String> menuTitles) {
+        if (menuAdapters != null && menuAdapters.size() > 0) {
+            mMenuAdapters.addAll(menuAdapters);
+            mMenuTitles.addAll(menuTitles);
+            initMenuViews();
         }
-        defaultFilterAdapter.addItems(list);
-        adapters[0] = defaultFilterAdapter;
-        adapters[1] = defaultFilterAdapter;
-        mMenuAdapters.add(adapters);
-        mMenuAdapters.add(adapters);
     }
 }

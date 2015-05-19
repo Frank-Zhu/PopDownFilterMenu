@@ -48,9 +48,9 @@ public abstract class FilterBaseAdapter<T extends BaseModel> extends BaseAdapter
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FilterViewHolder) {
-            bindViewData((FilterViewHolder) holder, getItemData(position));
+            bindViewData((FilterViewHolder) holder, getItemData(position), position == mSelectIndex);
         }
     }
 
-    public abstract void bindViewData(FilterViewHolder holder, T data);
+    public abstract void bindViewData(FilterViewHolder holder, T data, boolean isSelectPosition);
 }

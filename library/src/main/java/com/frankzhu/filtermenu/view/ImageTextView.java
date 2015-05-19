@@ -81,7 +81,7 @@ public class ImageTextView extends FrameLayout {
             isShowIcon = a.getBoolean(R.styleable.ImageTextView_fmShowIcon, false);
             isShowNumber = a.getBoolean(R.styleable.ImageTextView_fmShowNumber, false);
             mTextColor = a.getColor(R.styleable.ImageTextView_fmTextColor, R.color.default_primary_text);
-            mNumberColor = a.getColor(R.styleable.ImageTextView_fmNumberColor, R.color.default_primary_text);
+            mNumberColor = a.getColor(R.styleable.ImageTextView_fmNumberColor, android.R.color.white);
             mTextSize = a.getDimension(R.styleable.ImageTextView_fmTextSize, 18);
             mNumberSize = a.getDimension(R.styleable.ImageTextView_fmNumberSize, 16);
             mIconRes = a.getResourceId(R.styleable.ImageTextView_fmIcon, R.drawable.abc_ic_menu_cut_mtrl_alpha);
